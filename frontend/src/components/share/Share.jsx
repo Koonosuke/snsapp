@@ -11,6 +11,8 @@ export default function Share() {
   const [isPosting, setIsPosting] = useState(false); // 投稿中かどうかの状態
   const [isPosted, setIsPosted] = useState(false); // 投稿成功後の状態
 
+  const [file, setFile] = useState(null);
+  console.log(file);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsPosting(true); // 投稿中に設定
@@ -54,10 +56,17 @@ export default function Share() {
         <hr className="shareHr" />
 
         <form className="shareButtons" onSubmit={(e) => handleSubmit(e)}>
-          <div className="shareOptions">
+          <label className="shareOptions" htmlFor="file">
             <Image className="shareIcon" htmlColor="blue" />
             <span className="shareOptionText">写真</span>
-          </div>
+            <input
+              type="file"
+              id="file"
+              accept=".png, .jpeg, .jpg"
+              style={{ display: "none" }}
+              onChange={(e) => setFile(e.target.files[0])}
+            />
+          </label>
           <div className="shareOptions">
             <Gif className="shareIcon" htmlColor="hotpink" />
             <span className="shareOptionText">GIF</span>

@@ -1,9 +1,8 @@
 import { createContext, useReducer } from "react";
 import AuthReducer from "./AuthReducer";
 
-//最初のユーザー状態の定義
+// 初期状態にユーザーデータを設定
 const initialState = {
-  //user: null, //ログインしてないですね。
   user: {
     _id: "668109c8555d2fa257d83e9c",
     username: "kishi",
@@ -14,15 +13,13 @@ const initialState = {
     followings: [],
     isAdmin: false,
   },
-
-  //JSON.parse(localStorage.getItem("user")) || null,
-  isFetching: false, //ログインしようともしてないですね。
-  error: false, //エラーも吐いてないですね。
+  isFetching: false,
+  error: false,
 };
 
 export const AuthContext = createContext(initialState);
+
 export const AuthContextProvider = ({ children }) => {
-  //ユーザー入力によって状態(state)が更新され、それをグローバルに利用している。
   const [state, dispatch] = useReducer(AuthReducer, initialState);
 
   return (

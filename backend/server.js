@@ -7,13 +7,16 @@ const io = socketIo(server);
 const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const postsRoute = require("./routes/posts");
+const uploadRoute = require("./routes/upload");
 const PORT = 3018;
-
+const path = require("path");
 // ミドルウェアを使ってusers.jsをserver.jsから引き離す
+app.use("/images", express.static(path.join(__dirname, "public/images")));
 app.use(express.json());
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/posts", postsRoute);
+app.use("/api/upload", uploadRoute);
 
 const mongoose = require("mongoose");
 require("dotenv").config();

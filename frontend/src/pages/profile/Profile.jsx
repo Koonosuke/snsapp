@@ -1,13 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"; // useParamsをインポート
+import { useParams } from "react-router-dom";
 import Sidebar from "../../components/sidebar/Sidebar";
 import TimeLine from "../../components/timeline/TimeLine";
 import Topbar from "../../components/topbar/Topbar";
 import "./Profile.css";
 
-export default function Profile() {
-  const { username } = useParams(); // URLパラメーターからusernameを取得
+const Profile = () => {
+  const { username } = useParams();
   const REACT_APP_PUBLIC_FOLDER = process.env.REACT_APP_PUBLIC_FOLDER;
 
   const [user, setUser] = useState({});
@@ -16,7 +16,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`/api/users?username=${username}`); // URLパラメーターのusernameを使って取得
+        const response = await axios.get(`/api/users?username=${username}`);
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -26,7 +26,7 @@ export default function Profile() {
     };
 
     fetchUser();
-  }, [username]); // usernameを依存関係に追加
+  }, [username]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -49,8 +49,8 @@ export default function Profile() {
               />
               <img
                 src={
-                  REACT_APP_PUBLIC_FOLDER + user.profilePicture ||
-                  REACT_APP_PUBLIC_FOLDER + "/person/noAvatar.png"
+                  REACT_APP_PUBLIC_FOLDER +
+                  (user.profilePicture || "/person/noAvatar.png")
                 }
                 alt=""
                 className="profileUserImg"
@@ -62,11 +62,12 @@ export default function Profile() {
             </div>
           </div>
           <div className="profileRightBottom">
-            <TimeLine username={username} /> {/* usernameをpropsとして渡す */}
-            {/* <Rightbar user={user} /> */}
+            <TimeLine username={username} />
           </div>
         </div>
       </div>
     </>
   );
-}
+};
+
+export default Profile;

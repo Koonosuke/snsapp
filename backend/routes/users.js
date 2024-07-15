@@ -1,8 +1,7 @@
 const router = require("express").Router();
 const User = require("../models/User");
-//CRUD→作る、読む、更新、削除
 
-//ユーザー情報の更新
+// ユーザー情報の更新
 router.put("/:id", async (req, res) => {
   if (req.body.userId === req.params.id || req.body.isAdmin) {
     try {
@@ -10,24 +9,21 @@ router.put("/:id", async (req, res) => {
         $set: req.body,
       });
       res.status(200).json("ユーザー情報が更新されました");
-    } catch {
+    } catch (err) {
       return res.status(500).json(err);
     }
   } else {
     return res
       .status(403)
-      .json(
-        "あなたは自信のアカウントでログインしているときのみ情報を更新できます"
-      );
+      .json("自分のアカウントでログインしている場合のみ、情報を更新できます");
   }
 });
 
-//ユーザー情報の削除
+// ユーザー情報の削除
 router.delete("/:id", async (req, res) => {
   if (req.body.userId === req.params.id || req.body.isAdmin) {
     try {
       const user = await User.findByIdAndDelete(req.params.id);
-
       res.status(200).json("ユーザー情報が削除されました");
     } catch (err) {
       return res.status(500).json(err);
@@ -35,29 +31,11 @@ router.delete("/:id", async (req, res) => {
   } else {
     return res
       .status(403)
-      .json(
-        "あなたは自信のアカウントでログインしているときのみ情報を削除できます"
-      );
+      .json("自分のアカウントでログインしている場合のみ、情報を削除できます");
   }
 });
 
-//ユーザー情報の取得
-
-// router.get("/:id", async (req, res) => {
-//   try {
-//     const user = await User.findById(req.params.id);
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-//     const { password, updatedAt, ...other } = user._doc;
-//     return res.status(200).json(other);
-//   } catch (err) {
-//     console.error(err); // エラーログをコンソールに出力
-//     return res.status(500).json({ message: "Server error", error: err });
-//   }
-// });
-
-//クエリでユーザー情報の取得
+// ユーザー情報の取得（クエリを使用）
 router.get("/", async (req, res) => {
   const userId = req.query.userId;
   const username = req.query.username;
@@ -65,6 +43,9 @@ router.get("/", async (req, res) => {
     const user = userId
       ? await User.findById(userId)
       : await User.findOne({ username: username });
+    if (!user) {
+      return res.status(404).json({ message: "ユーザーが見つかりません" });
+    }
     const { password, updatedAt, ...other } = user._doc;
     return res.status(200).json(other);
   } catch (err) {
@@ -72,71 +53,74 @@ router.get("/", async (req, res) => {
   }
 });
 
-//ユーザのフォロー
+// フォローユーザーの情報を取得
+router.get("/:id/followings", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    const followings = await Promise.all(
+      user.followings.map((followingId) => {
+        return User.findById(followingId);
+      })
+    );
+    let followingsList = [];
+    followings.map((following) => {
+      const { _id, username, email, profilePicture } = following;
+      followingsList.push({ _id, username, email, profilePicture });
+    });
+    res.status(200).json(followingsList);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// ユーザーのフォロー
 router.put("/:id/follow", async (req, res) => {
   if (req.body.userId !== req.params.id) {
     try {
       const user = await User.findById(req.params.id);
-      const currentuser = await User.findById(req.body.userId);
+      const currentUser = await User.findById(req.body.userId);
       if (!user.followers.includes(req.body.userId)) {
-        //フォロワーに自身がフォローされていなかった場合
-
         await user.updateOne({
-          $push: {
-            followers: req.body.userId,
-          },
+          $push: { followers: req.body.userId },
         });
-        await currentuser.updateOne({
-          $push: {
-            followings: req.params.id,
-          },
+        await currentUser.updateOne({
+          $push: { followings: req.params.id },
         });
-        return res.status(200).json("フォローに成功されました");
+        return res.status(200).json("フォローに成功しました");
       } else {
-        return res
-          .status(403)
-          .json("あなたはすでにユーザーをフォローされています");
+        return res.status(403).json("すでにこのユーザーをフォローしています");
       }
     } catch (err) {
       return res.status(500).json(err);
     }
   } else {
-    return res.status(500).json("自分自身をフォローできません");
+    return res.status(403).json("自分自身をフォローすることはできません");
   }
 });
 
-//ユーザのフォローの解除
+// ユーザーのフォロー解除
 router.put("/:id/unfollow", async (req, res) => {
   if (req.body.userId !== req.params.id) {
     try {
       const user = await User.findById(req.params.id);
-      const currentuser = await User.findById(req.body.userId);
-      //フォロワーに自身がいたら外せる
+      const currentUser = await User.findById(req.body.userId);
       if (user.followers.includes(req.body.userId)) {
         await user.updateOne({
-          $pull: {
-            followers: req.body.userId,
-          },
+          $pull: { followers: req.body.userId },
         });
-        await currentuser.updateOne({
-          $pull: {
-            followings: req.params.id,
-          },
+        await currentUser.updateOne({
+          $pull: { followings: req.params.id },
         });
-        return res.status(200).json("フォロー解除されました");
+        return res.status(200).json("フォローを解除しました");
       } else {
-        return res.status(403).json("このユーザーは解除できません");
+        return res.status(403).json("このユーザーを解除することはできません");
       }
     } catch (err) {
       return res.status(500).json(err);
     }
   } else {
-    return res.status(500).json("自分自身の解除はできません");
+    return res.status(403).json("自分自身のフォロー解除はできません");
   }
 });
-
-//  router.get("/", (req,res)=>{
-//     res.send("user router");
-//  });
 
 module.exports = router;

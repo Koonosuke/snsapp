@@ -26,7 +26,7 @@ export default function Sidebar() {
           <li className="sidebarListItem">
             <Notifications className="sidebarIcon" />
             <Link
-              to="/message"
+              to="/message1"
               style={{ textDecoration: "none", color: "black" }}
             >
               <span className="sidebarListItemText">メッセージ</span>
