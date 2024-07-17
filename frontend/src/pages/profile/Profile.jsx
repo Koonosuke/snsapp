@@ -42,7 +42,7 @@ const Profile = () => {
             <div className="profileCover">
               <img
                 src={
-                  user.coverPicture || `${REACT_APP_PUBLIC_FOLDER}/post/3.jpeg`
+                  user.coverPicture || `${REACT_APP_PUBLIC_FOLDER}/post/4.jpeg`
                 }
                 alt=""
                 className="profileCoverImg"
