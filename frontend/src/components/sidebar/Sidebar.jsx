@@ -2,7 +2,6 @@ import { Home, Notifications, Person } from "@mui/icons-material";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Users } from "../../dummyDate";
-import CloseFriend from "../closeFriend/CloseFriend";
 import "./Sidebar.css";
 
 export default function Sidebar() {
@@ -51,12 +50,12 @@ export default function Sidebar() {
             </li> */}
         </ul>
 
-        <hr className="sidebarHr" />
+        {/* <hr className="sidebarHr" />
         <ul className="sidebarFriendList">
           {Users.map((user) => (
             <CloseFriend user={user} key={user.id} />
           ))}
-        </ul>
+        </ul> */}
       </div>
     </div>
   );

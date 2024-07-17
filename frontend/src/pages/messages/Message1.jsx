@@ -67,19 +67,21 @@ export default function Message1() {
           </button>
         </div>
         <div>
-          <input type="file" id="file" accept=".png, .jpeg, .jpg" />
-          <h3>自分の名前を押すか、追加して送信してね</h3>
+          <h5>送信できないときは、更新ボタンを押してね</h5>
+          <h3>自分の名前を選んで送信してね</h3>
         </div>
-        <div className="sender-buttons">
-          {senders.map((senderName, index) => (
-            <button
-              key={index}
-              onClick={() => setSender(senderName)}
-              className="sender-button"
-            >
-              {senderName}
-            </button>
-          ))}
+        <div className="sender-dropdown-container">
+          <select
+            value={sender}
+            onChange={(e) => setSender(e.target.value)}
+            className="sender-dropdown"
+          >
+            {senders.map((senderName, index) => (
+              <option key={index} value={senderName}>
+                {senderName}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="add-sender-container">
           <input

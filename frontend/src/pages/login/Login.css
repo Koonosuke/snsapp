@@ -1,7 +1,9 @@
 .login {
   width: 100vw;
   height: 100vh;
-  background-color: #f8fcff;
+  background-image: url("R.jpg"); /* Set the background image */
+  background-size: cover; /* Make sure the image covers the entire background */
+  background-position: center; /* Center the image */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,7 +72,6 @@
 .loginForgot {
   text-align: center;
   color: #41428b;
-  
 }
 
 .loginRegisterButton {

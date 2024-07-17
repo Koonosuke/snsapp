@@ -16,7 +16,11 @@ export default function TimeLine({ username }) {
       const response = username
         ? await axios.get(`/api/posts/profile/${username}`)
         : await axios.get(`/api/posts/timeline/${user._id}`); //PostmanからとってきたuserId
-      setPosts(response.data);
+      setPosts(
+        response.data.sort((post1, post2) => {
+          return new Date(post2.createdAt) - new Date(post1.createdAt);
+        })
+      );
 
       // console.log(response);
     };

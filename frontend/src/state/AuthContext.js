@@ -3,6 +3,7 @@ import AuthReducer from "./AuthReducer";
 
 // 初期状態にユーザーデータを設定
 const initialState = {
+  // user: null,
   user: {
     _id: "668109c8555d2fa257d83e9c",
     username: "kishi",

@@ -1,4 +1,4 @@
-import { Analytics, Face, Gif, Image } from "@mui/icons-material";
+import { Image } from "@mui/icons-material";
 import axios from "axios";
 import React, { useContext, useRef, useState } from "react";
 import { AuthContext } from "../../state/AuthContext";
@@ -21,6 +21,20 @@ export default function Share() {
       userId: user._id,
       desc: desc.current.value,
     };
+
+    if (file) {
+      const data = new FormData();
+      const fileName = Date.now() + file.name;
+      data.append("name", fileName);
+      data.append("file", file);
+      newPost.img = fileName;
+      try {
+        await axios.post("/api/upload", data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
     try {
       await axios.post("/api/posts", newPost);
       setIsPosting(false); // 投稿完了に設定
@@ -67,7 +81,7 @@ export default function Share() {
               onChange={(e) => setFile(e.target.files[0])}
             />
           </label>
-          <div className="shareOptions">
+          {/* <div className="shareOptions">
             <Gif className="shareIcon" htmlColor="hotpink" />
             <span className="shareOptionText">GIF</span>
           </div>
@@ -78,7 +92,7 @@ export default function Share() {
           <div className="shareOptions">
             <Analytics className="shareIcon" htmlColor="red" />
             <span className="shareOptionText">投票</span>
-          </div>
+          </div> */}
           <button
             className={`shareButton ${isPosted ? "posted" : ""}`}
             type="submit"
