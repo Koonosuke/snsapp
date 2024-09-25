@@ -13,3 +13,4 @@ export default function CloseFriend({ user }) {
     </li>
   );
 }
+

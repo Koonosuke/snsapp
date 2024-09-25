@@ -56,6 +56,7 @@ export default function Post({ post }) {
             <span className="postDate">{format(post.createdAt)}</span>
           </div>
           <div className="postRight">
+            
             <MoreVert />
           </div>
         </div>
